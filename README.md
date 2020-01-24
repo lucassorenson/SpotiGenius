@@ -1,0 +1,1 @@
+YourMusic is an app to get more information about the music you are listening to, such as the Genius.com lyrics or GuitarTabs.com Tabs.
