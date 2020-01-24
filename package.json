@@ -1,30 +1,38 @@
 {
-  "name": "yourmusic",
-  "version": "1.0.0",
-  "description": "Shows information about the song you are listening to on Spotify",
-  "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lucassorenson/YourMusic.git"
-  },
-  "keywords": [
-    "spotify",
-    "genius",
-    "lyrics",
-    "music",
-    "guitartabs",
-    "guitar",
-    "tabs",
-    "songs"
-  ],
-  "author": "Luke Sorenson",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/lucassorenson/YourMusic/issues"
-  },
-  "homepage": "https://github.com/lucassorenson/YourMusic#readme"
+    "name": "yourmusic",
+    "version": "1.0.0",
+    "description": "Shows information about the song you are listening to on Spotify",
+    "main": "server.js",
+    "scripts": {
+        "client-install": "npm install --prefix client",
+        "start": "node index.js",
+        "server": "nodemon index.js",
+        "client": "npm start --prefix client",
+        "dev": "concurrently \"npm run server\" \"npm run client\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lucassorenson/YourMusic.git"
+    },
+    "keywords": [
+        "spotify",
+        "genius",
+        "lyrics",
+        "music",
+        "guitartabs",
+        "guitar",
+        "tabs",
+        "songs"
+    ],
+    "author": "Lucas Sorenson",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/lucassorenson/YourMusic/issues"
+    },
+    "homepage": "https://github.com/lucassorenson/YourMusic#readme",
+    "dependencies": {
+        "concurrently": "^5.0.2",
+        "cors": "^2.8.5",
+        "express": "^4.17.1"
+    }
 }
