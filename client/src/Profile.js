@@ -13,36 +13,45 @@ class Profile extends Component {
                 album: ''
             }
         };
-        this.connectToServer = this.connectToServer.bind(this);
+        this.getProfile = this.getProfile.bind(this);
     }
 
-    connectToServer() {
+    getProfile() {
         fetch('/getProfile')
         .then(res => res.json())
-        .then(data => this.setState({
+        .then(userData => this.setState({
             user: {
-                name: data.user.name
-            },
-            song: {
-                title: data.song.title,
-                artist: data.song.artist,
-                album: data.song.album
+                name: userData.name
             }
         }))
     }
 
-    componentDidMount(){
-        this.connectToServer()
+    getSong() {
+        fetch('/getSong')
+        .then(res => res.json())
+        .then(songData => this.setState({
+            song: {
+                title: songData.title,
+                artist: songData.artist,
+                album: songData.album
+            }
+        }))
     }
-    
+
+    componentDidMount() {
+        this.getProfile()
+        this.getSong()
+    }
+
     render() {
-        return (<div>
-            <h1>{this.state.user.name}'s Profile</h1>
+        return ( <div>
+            <h1>{ this.state.user.name }'s Profile</h1>
             <h2>Song Info</h2>
-            <p>Song: {this.state.song.title}</p>
-            <p>Artist: {this.state.song.artist}</p>
-            <p>Album: {this.state.song.album}</p>
-        </div>);  
+            <p>Song: { this.state.song.title }</p>
+            <p>Artist: { this.state.song.artist }</p>
+            <p>Album: { this.state.song.album }</p>
+        </div> 
+        )
     }
 }
 

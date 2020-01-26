@@ -13,18 +13,20 @@ app.get('/', (req, res) => {
 
 app.get('/getProfile', (req, res) => {
     let testVal = {
-        user: {
-            name: 'John Test'
-        },
-        song: {
-            title: 'Fake Song',
-            artist: 'Test Artist',
-            album: 'Not a Real Album'
-        }
+        name: "John Test"
     }
 
     res.send(testVal)
+})
 
+app.get('/getSong', (req, res) => {
+    let testVal = {
+        title: 'Fake Song',
+        artist: 'Test Artist',
+        album: 'Not a Real Album'
+    }
+    
+    res.send(testVal)
 })
 
 
