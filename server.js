@@ -11,6 +11,23 @@ app.get('/', (req, res) => {
     res.send('root route')
 })
 
+app.get('/getProfile', (req, res) => {
+    let testVal = {
+        user: {
+            name: 'John Test'
+        },
+        song: {
+            title: 'Fake Song',
+            artist: 'Test Artist',
+            album: 'Not a Real Album'
+        }
+    }
+
+    res.send(testVal)
+
+})
+
+
 app.use(express.static(path.join(__dirname, `client/${folderForIndex}`)));
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname + `/client/${folderForIndex}/index.html`));

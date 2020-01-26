@@ -13,6 +13,26 @@ class Profile extends Component {
                 album: ''
             }
         };
+        this.connectToServer = this.connectToServer.bind(this);
+    }
+
+    connectToServer() {
+        fetch('/getProfile')
+        .then(res => res.json())
+        .then(data => this.setState({
+            user: {
+                name: data.user.name
+            },
+            song: {
+                title: data.song.title,
+                artist: data.song.artist,
+                album: data.song.album
+            }
+        }))
+    }
+
+    componentDidMount(){
+        this.connectToServer()
     }
     
     render() {
