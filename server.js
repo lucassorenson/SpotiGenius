@@ -3,20 +3,50 @@ const app = express();
 const path = require('path');
 const port = process.env.PORT || 5000;
 const cors = require('cors')
+const SpotifyWebApi = require('spotify-web-api-node')
 const folderForIndex = app.get("env") === 'development' ? 'public' : 'build'
+const redirectUri = app.get("env") === 'development' ? 'http://localhost:5000/spotify-auth/callback' : '*PRODUCTION URI*'
 
 app.use(cors({ origin: 'http://localhost:3000' }))
+
+const spotifyApi = new SpotifyWebApi({
+    clientId: 'a7e8b924f0734e9786ff52b834edba2e',
+    clientSecret: '8075c06c97294d99bc0af5241e54776a',
+    redirectUri: redirectUri
+})
+
+const spotifyAuthorizeURL = spotifyApi.createAuthorizeURL(['user-read-playback-state', 'user-read-currently-playing']);
 
 app.get('/', (req, res) => {
     res.send('root route')
 })
 
-app.get('/getProfile', (req, res) => {
-    let testVal = {
-        name: "John Test"
-    }
+app.get('/spotify-login', (req, res) => {
+    res.send(spotifyAuthorizeURL)
+})
 
-    res.send(testVal)
+app.get('/spotify-auth', (req, res) => {
+    res.redirect(spotifyAuthorizeURL)
+})
+
+app.get('/spotify-auth/callback', (req, res) => {
+    spotifyApi.authorizationCodeGrant(req.query.code)
+    .then((data) => {
+          spotifyApi.setAccessToken(data.body['access_token']);
+          spotifyApi.setRefreshToken(data.body['refresh_token']);
+        },
+        function(err) {
+          console.log('Something went wrong!', err);
+        }
+    )
+    res.redirect('http://localhost:3000/profile')
+})
+
+app.get('/getProfile', (req, res) => {
+    spotifyApi.getMe()
+    .then(data => res.send({
+        name: data.body.display_name
+    }))
 })
 
 app.get('/getSong', (req, res) => {
