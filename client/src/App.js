@@ -3,7 +3,7 @@ import './App.css';
 
 class App extends Component {
     render() {
-        const loginUri = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '*Production URI*'
+        const loginUri = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/spotify-auth' : '*Production URI*'
         return (<div>
             <h1>Your Music</h1>
             <p>Get useful information about the music you are listening to</p>

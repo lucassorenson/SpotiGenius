@@ -8,15 +8,13 @@ class Profile extends Component {
                 name: ''
             },
             song: {
-                title: '',
-                artist: '',
-                album: ''
-            },
+                isPlaying: false
+            }
         };
         this.getProfile = this.getProfile.bind(this);
         this.getSong = this.getSong.bind(this);
     }
-
+    
     getProfile() {
         fetch('/getProfile')
         .then(res => res.json())
@@ -27,16 +25,35 @@ class Profile extends Component {
         }))
     }
 
+    setSongTimer(timeLeft) {
+        if (this.timer) {
+            clearTimeout(this.timer)
+        }
+        this.timer = setTimeout(() => this.getSong(), timeLeft)
+    }
+
     getSong() {
         fetch('/getSong')
         .then(res => res.json())
-        .then(songData => this.setState({
-            song: {
-                title: songData.title,
-                artist: songData.artist,
-                album: songData.album
+        .then(songData => {
+            if (songData.isPlaying) {
+                this.setSongTimer(songData.timeLeft)
+                this.setState({
+                    song: {
+                        title: songData.title,
+                        artist: songData.artist,
+                        album: songData.album,
+                        isPlaying: songData.isPlaying
+                    }
+                })
+            } else {
+                this.setState({
+                    song: {
+                        isPlaying: false
+                    }
+                })
             }
-        }))
+        })
     }
 
     componentDidMount() {
@@ -44,13 +61,22 @@ class Profile extends Component {
         this.getSong()
     }
 
+
+
     render() {
-        return ( <div>
-            <h1>{ this.state.user.name }'s Profile</h1>
-            <h2>Song Info</h2>
+
+        let songInfo = (<div>
             <p>Song: { this.state.song.title }</p>
             <p>Artist: { this.state.song.artist }</p>
-            <p>Album: { this.state.song.album }</p>
+            <p>Album: { this.state.song.album }</p></div>)
+        
+        let noSongInfo = (<p>Please play a song</p>)
+
+        return ( <div>
+            <h1>{ this.state.user.name }'s Profile</h1>
+            <button onClick={this.getSong}>Refresh Song</button>
+            <h2>Song Info</h2>
+            {this.state.song.isPlaying ? songInfo : noSongInfo}
         </div> 
         )
     }

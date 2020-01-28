@@ -54,12 +54,14 @@ app.get('/getSong', (req, res) => {
     .then(data => {
         if (data.body.is_playing) {
             res.send({
+                isPlaying: true,
                 title: data.body.item.name,
                 artist: data.body.item.artists[0].name,
-                album: data.body.item.album.name
+                album: data.body.item.album.name,
+                timeLeft: data.body.item.duration_ms - data.body.progress_ms
             })
         } else {
-            res.send("No song playing")
+            res.send({isPlaying: false})
         }
     }, (err) => {
         console.log('Something went wrong at /getSong in server.js!', err)
