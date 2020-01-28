@@ -21,9 +21,6 @@ app.get('/', (req, res) => {
     res.send('root route')
 })
 
-app.get('/spotify-login', (req, res) => {
-    res.send(spotifyAuthorizeURL)
-})
 
 app.get('/spotify-auth', (req, res) => {
     res.redirect(spotifyAuthorizeURL)
@@ -35,28 +32,38 @@ app.get('/spotify-auth/callback', (req, res) => {
           spotifyApi.setAccessToken(data.body['access_token']);
           spotifyApi.setRefreshToken(data.body['refresh_token']);
         },
-        function(err) {
-          console.log('Something went wrong!', err);
+        (err) => {
+          console.log('Something went wrong at /spotify-auth/callback in server.js!', err);
         }
     )
     res.redirect('http://localhost:3000/profile')
 })
 
+
 app.get('/getProfile', (req, res) => {
     spotifyApi.getMe()
     .then(data => res.send({
         name: data.body.display_name
-    }))
+    }), (err) => {
+        console.log('Something went wrong at /getProfile in server.js!', err)
+    })
 })
 
 app.get('/getSong', (req, res) => {
-    let testVal = {
-        title: 'Fake Song',
-        artist: 'Test Artist',
-        album: 'Not a Real Album'
-    }
-    
-    res.send(testVal)
+    spotifyApi.getMyCurrentPlaybackState({})
+    .then(data => {
+        if (data.body.is_playing) {
+            res.send({
+                title: data.body.item.name,
+                artist: data.body.item.artists[0].name,
+                album: data.body.item.album.name
+            })
+        } else {
+            res.send("No song playing")
+        }
+    }, (err) => {
+        console.log('Something went wrong at /getSong in server.js!', err)
+    })
 })
 
 
@@ -64,7 +71,6 @@ app.use(express.static(path.join(__dirname, `client/${folderForIndex}`)));
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname + `/client/${folderForIndex}/index.html`));
 })
-
 app.listen(port, (req, res) => {
     console.log(`server listening on port: ${port}`)
 });

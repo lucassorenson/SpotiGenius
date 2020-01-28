@@ -12,17 +12,9 @@ class Profile extends Component {
                 artist: '',
                 album: ''
             },
-            authUrl: ''
         };
-        this.login = this.login.bind(this);
         this.getProfile = this.getProfile.bind(this);
         this.getSong = this.getSong.bind(this);
-    }
-
-    login() {
-        fetch('http://localhost:5000/spotify-login')
-        .then(res => res.text())
-        .then(url => this.setState({authUrl: url}))
     }
 
     getProfile() {
@@ -49,6 +41,7 @@ class Profile extends Component {
 
     componentDidMount() {
         this.getProfile()
+        this.getSong()
     }
 
     render() {
