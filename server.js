@@ -5,7 +5,7 @@ const port = process.env.PORT || 5000;
 const cors = require('cors')
 const SpotifyWebApi = require('spotify-web-api-node')
 const folderForIndex = app.get("env") === 'development' ? 'public' : 'build'
-const redirectUri = app.get("env") === 'development' ? 'http://localhost:5000/spotify-auth/callback' : '*PRODUCTION URI*'
+const redirectUri = app.get("env") === 'development' ? 'http://localhost:5000/spotify-auth/callback' : 'https://your-music-info.herokuapp.com/'
 
 app.use(cors({ origin: 'http://localhost:3000' }))
 
