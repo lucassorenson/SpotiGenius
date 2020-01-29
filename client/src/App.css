@@ -1,0 +1,23 @@
+body {
+    text-align: center;
+    background-color: black;
+    color: white;
+    border: #1DB954 10px solid;
+    border-radius: 10px;
+    height: 94vh;
+    font-family: Circular, Helvetica, Arial, sans-serif
+}
+
+h1 {
+    font-size: 100px
+}
+
+a {
+    display: inline-block;
+    background-color: #1DB954;
+    color: white;
+    padding: 1em 1.5em;
+    text-decoration: none;
+    text-transform: uppercase;
+    margin-top: 20px;
+}
