@@ -31,7 +31,7 @@ app.get('/spotify-auth/callback', (req, res) => {
           console.log('Something went wrong at /spotify-auth/callback in server.js!', err);
         }
     )
-    res.redirect('http://localhost:3000/profile')
+    res.redirect('/profile')
 })
 
 
