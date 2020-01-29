@@ -17,11 +17,6 @@ const spotifyApi = new SpotifyWebApi({
 
 const spotifyAuthorizeURL = spotifyApi.createAuthorizeURL(['user-read-playback-state', 'user-read-currently-playing']);
 
-app.get('/', (req, res) => {
-    res.send('root route')
-})
-
-
 app.get('/spotify-auth', (req, res) => {
     res.redirect(spotifyAuthorizeURL)
 })
