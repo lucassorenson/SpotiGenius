@@ -31,7 +31,7 @@ app.get('/spotify-auth/callback', (req, res) => {
           console.log('Something went wrong at /spotify-auth/callback in server.js!', err);
         }
     )
-    res.redirect('/profile')
+    res.redirect(`${req.headers.referer}profile`)
 })
 
 
@@ -63,6 +63,9 @@ app.get('/getSong', (req, res) => {
     })
 })
 
+app.get('/test', (req, res) => {
+    res.send('test text')
+})
 
 app.use(express.static(path.join(__dirname, `client/${folderForIndex}`)));
 app.get('*', (req, res) => {
@@ -71,3 +74,5 @@ app.get('*', (req, res) => {
 app.listen(port, (req, res) => {
     console.log(`server listening on port: ${port}`)
 });
+
+module.exports = app
