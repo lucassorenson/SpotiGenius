@@ -1,11 +1,12 @@
+require('dotenv').config()
 var express = require('express');
 var router = express.Router();
 const SpotifyWebApi = require('spotify-web-api-node')
 const redirectUri = (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://your-music-info.herokuapp.com') + '/spotify-auth/callback'
 
 const spotifyApi = new SpotifyWebApi({
-    clientId: 'a7e8b924f0734e9786ff52b834edba2e',
-    clientSecret: '8075c06c97294d99bc0af5241e54776a',
+    clientId: process.env.SPOTIFY_CLIENT_ID,
+    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     redirectUri: redirectUri
 })
 
@@ -18,13 +19,26 @@ router.get('/spotify-auth', (req, res) => {
 router.get('/spotify-auth/callback', (req, res) => {
     spotifyApi.authorizationCodeGrant(req.query.code)
     .then((data) => {
-          spotifyApi.setAccessToken(data.body['access_token']);
-          spotifyApi.setRefreshToken(data.body['refresh_token']);
-        },
-        (err) => {
-          console.log('Something went wrong at /spotify-auth/callback in spotify-routes.js!', err);
-        }
-    )
+        spotifyApi.setAccessToken(data.body['access_token']);
+        spotifyApi.setRefreshToken(data.body['refresh_token']);
+        tokenExpirationEpoch = new Date().getTime() / 1000 + data.body['expires_in'];
+    }, (err) => {
+        console.log('Something went wrong at /spotify-auth/callback in spotify-routes.js!', err);
+    })
+    .then(() => {
+        setInterval(function() {
+            clearInterval(this);
+            spotifyApi.refreshAccessToken()
+            .then(function(data) {
+                    tokenExpirationEpoch =new Date().getTime() / 1000 + data.body['expires_in'];
+                }, function(err) {
+                    console.log('Could not refresh the token!', err.message);
+                });
+            }, (tokenExpirationEpoch - new Date().getTime() / 1000))
+    })
+
+    
+
     res.redirect(`${req.headers.referer}profile`)
 })
 
@@ -53,7 +67,7 @@ router.get('/getSong', (req, res) => {
         }
     }, (err) => {
         console.log('Something went wrong at /getSong in spotify-routes.js!', err)
-    })
+    }) 
 })
 
 module.exports = router;

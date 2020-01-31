@@ -77,7 +77,8 @@ class Profile extends Component {
             <button onClick={this.getSong}>Refresh Song</button>
             <h2>Song Info</h2>
             {this.state.song.isPlaying ? songInfo : noSongInfo}
-        </div> 
+            
+            </div> 
         )
     }
 }

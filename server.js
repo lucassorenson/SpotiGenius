@@ -8,7 +8,10 @@ process.env.NODE_ENV = app.get("env")
 const folderForIndex = app.get("env") === 'development' ? 'public' : 'build'
 
 app.use(cors({ origin: 'http://localhost:3000' }))
+
 app.use(require('./routes/spotify-routes.js'))
+app.use(require('./routes/genius-routes.js'))
+
 app.use(express.static(path.join(__dirname, `client/${folderForIndex}`)));
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname + `/client/${folderForIndex}/index.html`));
