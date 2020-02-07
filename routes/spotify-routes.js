@@ -3,13 +3,13 @@ var express = require('express');
 var router = express.Router();
 const SpotifyWebApi = require('spotify-web-api-node')
 const SpotifyStrategy = require('passport-spotify').Strategy;
-const redirectUri = (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://your-music-info.herokuapp.com') + '/spotify-auth/callback'
-
+const spotifyRedirectUri = (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://your-music-info.herokuapp.com') + '/spotify-auth/callback'
+const authRedirectUri = (process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://your-music-info.heroku.com') + '/profile'
 
 const spotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    redirectUri: redirectUri
+    redirectUri: spotifyRedirectUri
 })
 
 
@@ -19,7 +19,7 @@ module.exports = function(passport, User) {
         new SpotifyStrategy({
                 clientID: process.env.SPOTIFY_CLIENT_ID,
                 clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-                callbackURL: redirectUri
+                callbackURL: spotifyRedirectUri
             },
             function(accessToken, refreshToken, expires_in, profile, done) {
                 const now = new Date()
@@ -76,11 +76,10 @@ module.exports = function(passport, User) {
 
     router.get('/spotify-auth/callback', passport.authenticate('spotify', { failureRedirect: '/' }), function(req, res) {
         req.session.user = req.user
-        res.redirect('http://localhost:3000/profile')
+        res.redirect(authRedirectUri)
     })
 
     router.get('/getProfile', (req, res) => {
-
         spotifyApi.getMe()
             .then(data => res.send({
                 name: data.body.display_name
