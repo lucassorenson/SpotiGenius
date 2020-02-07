@@ -2,30 +2,39 @@ var express = require('express');
 var router = express.Router();
 var api = require('genius-api')
 var genius = new api(process.env.GENIUS_CLIENT_ACCESS_TOKEN)
+var axios = require('axios')
 
-const Vals = {
-    song: 'take me to church',
-    album: 'hozier',
-    artist: 'hozier'
-}
-
-function checkSong(data) {
+function checkSong(hit, song) {
     return (
-        data.title.toLowerCase() === Vals.song.toLowerCase() 
-        && data.primary_artist.name.toLowerCase() === Vals.artist.toLowerCase()
+        hit.title.toLowerCase() === song.title.toLowerCase()
+        && hit.primary_artist.name.toLowerCase() === song.artist.toLowerCase()
     )
 }
 
 router.get('/getLyrics', (req, res) => {
-   genius.search(Vals.song)
-   .then((data) => {
-        for (hit in data.hits) {
-            if (checkSong(data.hits[hit].result)) {
-                genius.song(data.hits[hit].result.id)
-                .then(data => console.log(data.song))
+    genius.search(req.query.title)
+        .then((data) => {
+            let numHits = 0
+            for (hit in data.hits) {
+                if (checkSong(data.hits[hit].result, req.query)) {
+                    let songId = data.hits[hit].result.id.toString()
+                    axios.get(`https://genius.com/songs/${songId}/embed.js`)
+                        .then((data) => {
+                            res.send({
+                                lyrics: data.data.match(/(?<=document.write)\(JSON.*/)[0],
+                                songId: songId
+                            })
+                        })
+                } else if (numHits++ >= data.hits.length - 1) {
+                    res.send({
+                        lyrics: null,
+                        songId: null
+                    })
+                }
+
+
             }
-        }
-   })
+        })
 })
 
 

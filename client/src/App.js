@@ -7,8 +7,10 @@ class App extends Component {
         return (<div>
             <h1>Your Music</h1>
             <p>Get useful information about the music you are listening to</p>
-            <a href={loginUri}>Login</a>
-        </div>);  
+            <a href={loginUri} className="button">Login</a>
+        </div>
+
+);  
     }
 }
 
