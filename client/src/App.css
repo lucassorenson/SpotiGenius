@@ -4,6 +4,7 @@ body {
     background-color: black;
     border: #1DB954 10px solid;
     border-radius: 10px;
+    color: white;
     min-height: calc(100vh - 40px);
     font-family: Circular, Helvetica, Arial, sans-serif
 }
@@ -12,8 +13,8 @@ h1 {
     font-size: 2rem;
 }
 
-div:not(#lyrics) {
-    color: white;
+#lyrics {
+    color: black
 }
 
 .button {
