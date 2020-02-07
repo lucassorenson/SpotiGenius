@@ -3,8 +3,8 @@ var express = require('express');
 var router = express.Router();
 const SpotifyWebApi = require('spotify-web-api-node')
 const SpotifyStrategy = require('passport-spotify').Strategy;
-const spotifyRedirectUri = (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://your-music-info.herokuapp.com') + '/spotify-auth/callback'
-const authRedirectUri = (process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://your-music-info.heroku.com') + '/profile'
+const spotifyRedirectUri = (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'http://your-music-info.herokuapp.com') + '/spotify-auth/callback'
+const authRedirectUri = (process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'http://your-music-info.heroku.com') + '/profile'
 
 const spotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
