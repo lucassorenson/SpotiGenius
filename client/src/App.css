@@ -6,7 +6,8 @@ body {
     border-radius: 10px;
     color: white;
     min-height: calc(100vh - 40px);
-    font-family: Circular, Helvetica, Arial, sans-serif
+    font-family: Circular, Helvetica, Arial, sans-serif;
+    text-align: center
 }
 
 h1 {

@@ -4,10 +4,12 @@ class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isLyrics: false,
             user: {
                 name: ''
             },
             song: {
+                title: '',
                 isPlaying: false
             }
         };
@@ -26,19 +28,11 @@ class Profile extends Component {
             }))
     }
 
-    setSongTimer(timeLeft) {
-        if (this.timer) {
-            clearTimeout(this.timer)
-        }
-        this.timer = setTimeout(() => this.getSong(), timeLeft)
-    }
-
     getSong() {
         fetch('/getSong')
             .then(res => res.json())
             .then(songData => {
-                if (songData.isPlaying) {
-                    this.setSongTimer(songData.timeLeft)
+                if (songData.isPlaying && songData.title !== this.state.song.title) {
                     this.setState({
                         song: {
                             title: songData.title,
@@ -47,7 +41,8 @@ class Profile extends Component {
                             isPlaying: songData.isPlaying
                         }
                     })
-                } else {
+                    this.getLyrics()
+                } else if (!songData.isPlaying) {
                     this.setState({
                         song: {
                             isPlaying: false
@@ -58,6 +53,10 @@ class Profile extends Component {
     }
 
     getLyrics() {
+        if (this.state.isLyrics) {
+            window.location.reload()
+        }
+
         fetch(`/getLyrics?title=${this.state.song.title}&artist=${this.state.song.artist}`)
             .then(data => data.json())
             .then(data => {
@@ -72,18 +71,20 @@ class Profile extends Component {
                     // 3. lyrics
                     // eslint-disable-next-line
                     document.getElementById('lyrics').innerHTML = eval(data.lyrics)
-                    // 4. lyrics-script
+                    // 4. lyrics-script  
                     document.getElementById('lyrics-script').src = 'https://assets.genius.com/javascripts/compiled/embedded_song-960e4685dd4d0ef829129bdd3a61098a.js'
                     // DO NOT MESS UP THE ORDER OF THESE, IT WILL BREAK
+                    this.setState({isLyrics: true})
                 }
             })
     }
 
     componentDidMount() {
         this.getProfile()
-        this.getSong()
+        window.setInterval(() => {
+            this.getSong()
+        }, 1500)
     }
-
 
 
     render() {
@@ -96,12 +97,9 @@ class Profile extends Component {
 
         return (<div>
             <h1>{this.state.user.name}'s Profile</h1>
-            <button onClick={this.getSong} className="button">Refresh Song</button>
 
             <h2>Song Info</h2>
             {this.state.song.isPlaying ? songInfo : noSongInfo}
-
-            <button onClick={this.getLyrics} className="button">Get Lyrics</button>
 
             <div id="embed-link"></div>
             <div id="lyrics"></div>
