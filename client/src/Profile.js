@@ -16,6 +16,11 @@ class Profile extends Component {
         this.getProfile = this.getProfile.bind(this);
         this.getSong = this.getSong.bind(this);
         this.getLyrics = this.getLyrics.bind(this);
+        this.sanitizeString = this.sanitizeString.bind(this);
+    }
+
+    sanitizeString(string) {
+        return string.replace(/\u200B/g, '').replace(String.fromCharCode(8217), String.fromCharCode(39)).toLowerCase()
     }
 
     getProfile() {
@@ -35,9 +40,9 @@ class Profile extends Component {
                 if (songData.isPlaying && songData.title !== this.state.song.title) {
                     this.setState({
                         song: {
-                            title: songData.title,
-                            artist: songData.artist,
-                            album: songData.album,
+                            title: this.sanitizeString(songData.title),
+                            artist: this.sanitizeString(songData.artist),
+                            album: this.sanitizeString(songData.album),
                             isPlaying: songData.isPlaying
                         }
                     })
@@ -96,7 +101,7 @@ class Profile extends Component {
         let noSongInfo = (<p>Please play a song</p>)
 
         return (<div>
-            <h1>{this.state.user.name}'s Profile</h1>
+            <h1>Welcome to SpotiGenius, {this.state.user.name}</h1>
 
             <h2>Song Info</h2>
             {this.state.song.isPlaying ? songInfo : noSongInfo}
