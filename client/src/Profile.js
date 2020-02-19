@@ -37,7 +37,7 @@ class Profile extends Component {
         fetch('/getSong')
             .then(res => res.json())
             .then(songData => {
-                if (songData.isPlaying && songData.title !== this.state.song.title) {
+                if (songData.isPlaying && this.sanitizeString(songData.title) !== this.state.song.title) {
                     this.setState({
                         song: {
                             title: this.sanitizeString(songData.title),
